@@ -1,0 +1,56 @@
+---
+let answer: string = "";
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+
+    const question = data.get("question");
+
+    interface Result {
+      result: string;
+    }
+
+    const result: Result = await(
+      await fetch("http://localhost:8080/ask", {
+        method: "POST",
+        body: question,
+      })
+    ).json();
+
+    answer = result.result;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>DaggerAI</title>
+  </head>
+  <body>
+    <h1>DaggerAI</h1>
+
+    <form method="POST">
+      <label htmlFor="question">Question</label>
+      <input type="text" name="question" />
+      <button>Ask</button>
+    </form>
+
+    {
+      answer != "" && (
+        <>
+          <h2>Answer:</h2>
+          <p>{answer}</p>
+        </>
+      )
+    }
+  </body>
+</html>
