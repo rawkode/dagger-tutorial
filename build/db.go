@@ -1,6 +1,8 @@
 package devtool
 
-import "dagger.io/dagger"
+import (
+	"dagger.io/dagger"
+)
 
 func GetDatabase(client *dagger.Client) *dagger.Container {
 	return client.

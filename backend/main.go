@@ -28,18 +28,6 @@ type QuestionAnswer struct {
 }
 
 func main() {
-	var apiToken, databaseUri string
-
-	apiToken = os.Getenv("OPENAI_TOKEN")
-	fmt.Println(apiToken)
-
-	databaseUri, exists := os.LookupEnv("DATABASE_URI")
-	if !exists {
-		databaseUri = "sqlite://file::memory:?cache=shared"
-	}
-
-	client := openai.NewClient(apiToken)
-
 	r := gin.Default()
 
 	r.GET("/ping", func(c *gin.Context) {
@@ -49,6 +37,17 @@ func main() {
 	})
 
 	r.POST("/ask", func(c *gin.Context) {
+		var apiToken, databaseUri string
+
+		apiToken = os.Getenv("OPENAI_TOKEN")
+
+		databaseUri, exists := os.LookupEnv("DATABASE_URI")
+		if !exists {
+			databaseUri = "sqlite://file::memory:?cache=shared"
+		}
+
+		client := openai.NewClient(apiToken)
+
 		var question Question
 		err := c.BindJSON(&question)
 

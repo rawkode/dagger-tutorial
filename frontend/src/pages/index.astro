@@ -13,8 +13,11 @@ if (Astro.request.method === "POST") {
 
     const result: Result = await(
       await fetch("http://localhost:8080/ask", {
+        headers: {
+          "Content-Type": "application/json",
+        },
         method: "POST",
-        body: question,
+        body: JSON.stringify({ question }),
       })
     ).json();
 
