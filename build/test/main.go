@@ -32,15 +32,17 @@ func build(ctx context.Context) error {
 
 	openAiTokenSecret := client.SetSecret("openAiToken", openAiToken)
 
+	// Get DB
+	database := devtool.GetDatabase(client)
+
 	// Get Backend Container
 	backend := backendBuilder.BuildContainerImage(client).
 		WithEnvVariable("DATABASE_URI", "postgres://postgres:postgres@database:5432/postgres").
 		WithSecretVariable("OPENAI_TOKEN", openAiTokenSecret).
-		WithEnvVariable("PORT", "9090").
-		WithExposedPort(9090)
-
-	// Get DB
-	database := devtool.GetDatabase(client)
+		WithEnvVariable("PORT", "8080").
+		WithExposedPort(8080).
+		WithServiceBinding("database", database).
+		WithExec([]string{""})
 
 	// Run Tests
 	_, filePath, _, _ := runtime.Caller(0)
@@ -52,7 +54,6 @@ func build(ctx context.Context) error {
 		Container().
 		From("ghcr.io/orange-opensource/hurl:3.0.0").
 		WithServiceBinding("backend", backend).
-		WithServiceBinding("database", database).
 		WithDirectory("/tests", src).
 		WithEntrypoint([]string{"hurl"}).
 		WithExec([]string{"/tests/tests.hurl"})

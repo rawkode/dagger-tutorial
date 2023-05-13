@@ -10,4 +10,4 @@ POST http://backend:8080/ask
 
 HTTP 200
 [Asserts]
-jsonpath "$.result" contains "Hallo"
+jsonpath "$.result" contains "Rawkode"

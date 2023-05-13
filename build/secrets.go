@@ -2,6 +2,7 @@ package devtool
 
 import (
 	"os/exec"
+	"strings"
 )
 
 func GetSecret(lookupRef string) (string, error) {
@@ -12,5 +13,5 @@ func GetSecret(lookupRef string) (string, error) {
 		return "", err
 	}
 
-	return string(stdout), nil
+	return strings.TrimSuffix(string(stdout), "\n"), nil
 }

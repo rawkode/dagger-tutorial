@@ -35,6 +35,8 @@ func BuildContainerImage(client *dagger.Client) *dagger.Container {
 
 	return client.Container().
 		From("ubuntu:22.10").
+		WithExec([]string{"apt", "update"}).
+		WithExec([]string{"apt", "install", "--yes", "ca-certificates"}).
 		WithFile("/entrypoint", buildOutput.File("/src/backend")).
 		WithEntrypoint([]string{"/entrypoint"}).
 		WithDefaultArgs()
